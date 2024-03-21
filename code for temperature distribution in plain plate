@@ -1,0 +1,34 @@
+% Parameters
+N = 50; % number of grid points
+T_top = 100; % temperature at the top boundary
+T_bottom = 0; % temperature at the bottom boundary
+T_left = 75; % temperature at the left boundary
+T_right = 50; % temperature at the right boundary
+
+% Initialize the temperature array
+T = zeros(N);
+
+% Set the boundary conditions
+T(1, :) = T_top;
+T(end, :) = T_bottom;
+T(:, 1) = T_left;
+T(:, end) = T_right;
+
+% Jacobi iteration
+while true
+    T_new = T;
+    for i = 2:N-1
+        for j = 2:N-1
+            T_new(i, j) = 0.25 * (T(i+1, j) + T(i-1, j) + T(i, j+1) + T(i, j-1));
+        end
+    end
+    if max(max(abs(T_new - T))) < 1e-5
+        break;
+    end
+    T = T_new;
+end
+
+% Plot the temperature distribution
+imagesc(T);
+colorbar;
+title('Steady-state temperature distribution in the plate');
